@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Plate - School Management</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Golden Plate</h1>
+            <p class="subtitle">School Plate Management System</p>
+        </header>
+
+        <main>
+            <div id="loading-indicator" class="hidden">
+                <div class="spinner"></div>
+                <p>Processing...</p>
+            </div>
+
+            <div id="home-view" class="card">
+                <h2>Welcome to Golden Plate</h2>
+                <p>Track clean and dirty plates at your school cafeteria</p>
+                
+                <div class="form-group">
+                    <label for="schoolName">Add a New School:</label>
+                    <div class="input-with-button">
+                        <input type="text" id="schoolName" placeholder="Enter school name" required>
+                        <button id="add-school-btn" class="action-btn"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+                
+                <div class="divider">
+                    <span>SCHOOLS</span>
+                </div>
+                
+                <div id="schools-list" class="schools-container">
+                    <p id="no-schools-message">No schools found. Add a school to get started.</p>
+                    <!-- Schools will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <div id="school-view" class="card hidden">
+                <div class="view-header">
+                    <button id="back-to-home-btn" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2 id="school-detail-title">School Name</h2>
+                </div>
+                
+                <div class="school-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Total Sessions:</span>
+                        <span id="total-sessions" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Total Plates:</span>
+                        <span id="total-plates" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Clean Plates:</span>
+                        <span id="total-clean" class="stat-value clean-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Dirty Plates:</span>
+                        <span id="total-dirty" class="stat-value dirty-count">0</span>
+                    </div>
+                </div>
+                
+                <button id="create-session-btn" class="primary-btn">Start New Session</button>
+                
+                <div class="divider">
+                    <span>PAST SESSIONS</span>
+                </div>
+                
+                <div id="school-sessions-list" class="sessions-container">
+                    <p id="no-school-sessions-message">No sessions found for this school.</p>
+                    <!-- School sessions will be loaded here dynamically -->
+                </div>
+            </div>
+
+            <div id="session-view" class="card hidden">
+                <div class="view-header">
+                    <button id="back-to-school-btn" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2 id="school-title">School Name</h2>
+                </div>
+                
+                <div class="collaboration-indicator">
+                    <span id="shared-session-indicator" class="hidden">
+                        <i class="fas fa-users"></i> Collaborative Session
+                    </span>
+                    <button id="share-session-btn" class="share-btn">
+                        <i class="fas fa-share-alt"></i> Share Session
+                    </button>
+                </div>
+                
+                <p>Add plates by clicking the buttons below:</p>
+                
+                <div class="plate-options">
+                    <button id="clean-plate-btn" class="plate-btn clean">
+                        <i class="fas fa-utensils"></i>
+                        <span>Clean Plate</span>
+                    </button>
+                    <div class="dirty-plate-container">
+                        <button id="dirty-plate-quick-btn" class="plate-btn dirty quick">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Dirty Plate</span>
+                        </button>
+                        <button id="dirty-plate-name-btn" class="plate-btn dirty name">
+                            <i class="fas fa-user"></i>
+                            <span>Dirty Plate with Name</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="plate-counter" class="counter-display">
+                    <div class="counter">
+                        <span class="label">Clean:</span>
+                        <span id="clean-count" class="count">0</span>
+                    </div>
+                    <div class="counter">
+                        <span class="label">Dirty:</span>
+                        <span id="dirty-count" class="count">0</span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="end-session-btn" class="primary-btn">End Session</button>
+                    <button id="cancel-session-btn" class="secondary-btn">Cancel</button>
+                </div>
+            </div>
+
+            <div id="results-view" class="card hidden">
+                <div class="view-header">
+                    <button id="back-to-school-from-results-btn" class="back-btn"><i class="fas fa-arrow-left"></i></button>
+                    <h2>Session Results</h2>
+                </div>
+                <h3 id="result-school-name">School Name</h3>
+                
+                <div class="chart-container">
+                    <canvas id="results-chart"></canvas>
+                </div>
+                
+                <div id="results-summary" class="results-summary">
+                    <!-- Results summary will be displayed here -->
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="new-session-btn" class="primary-btn">New Session</button>
+                    <button id="home-btn" class="secondary-btn">Back to Home</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2023 Golden Plate. All rights reserved.</p>
+            <p class="creator-credit">Created by Ottokar Kueper</p>
+        </footer>
+    </div>
+
+    <!-- Name Input Modal -->
+    <div id="nameInputModal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Enter Student Name</h3>
+            <input type="text" id="studentNameInput" placeholder="Student name" autocomplete="off">
+            <div class="modal-buttons">
+                <button id="modalCancelBtn" class="modal-cancel">Cancel</button>
+                <button id="modalSubmitBtn" class="modal-submit">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html> 
